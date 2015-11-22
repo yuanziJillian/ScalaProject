@@ -1,0 +1,37 @@
+package org.apache.spark.mllib.clustering
+
+import scala.collection.mutable.ArrayBuffer
+
+import org.jblas.DoubleMatrix
+
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.rdd.RDD
+
+object KMeans {
+  // Initialization mode names
+  val RANDOM = "random"
+  val K_MEANS_PARALLEL = "k-means||"
+
+  def train(
+      data: RDD[Array[Double]],
+      k: Int,
+      maxIterations: Int,
+      runs: Int,
+      initializationMode: String)
+    : KMeansModel =
+  {
+    new KMeans().setK(k)
+                .setMaxIterations(maxIterations)
+                .setRuns(runs)
+                .setInitializationMode(initializationMode)
+                .run(data)
+  }
+
+  def train(data: RDD[Array[Double]], k: Int, maxIterations: Int, runs: Int): KMeansModel = {
+    train(data, k, maxIterations, runs, K_MEANS_PARALLEL)
+  }
+
+  def train(data: RDD[Array[Double]], k: Int, maxIterations: Int): KMeansModel = {
+    train(data, k, maxIterations, 1, K_MEANS_PARALLEL)
+  }
